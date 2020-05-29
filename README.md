@@ -834,7 +834,7 @@ ggplot(data = enrichr_M7, aes(x=reorder(Term,-Adjusted.P.value,), y = -log10(Adj
 
 ```
 
-### Rede PPI com dados de Co-expressão
+### 4 - Rede PPI com dados de Co-expressão
 
 Essa etapa é a mais demorada pois depende do download de alguns dados do ENSEMBL e do STRING.
 
@@ -925,7 +925,7 @@ plots[1]
 ```
 ![](https://github.com/diegogotex/GBS/blob/master/Figs/M_ALL.png)
 
-### 4 - Identificando os tipos celulares
+### 5 - Identificando os tipos celulares
 
 Para essa etapa das análises, irei utilizar o (CTen)[http://www.influenza-x.org/~jshoemaker/cten/upload.php]
 
@@ -968,3 +968,6 @@ pheatmap(mat = CTen.REC[!rowSums(CTen.REC) <  1.5,],
          border_color = "white")
 
 ```
+
+!()[https://github.com/diegogotex/GBS/blob/master/Figs/CTen_GBS.png]
+!()[https://github.com/diegogotex/GBS/blob/master/Figs/CTen_REC.png]
