@@ -933,6 +933,194 @@ plots[1]
 ```
 ![](https://github.com/diegogotex/GBS/blob/master/Figs/M_ALL.png)
 
+
+**Analizando o dado do recuperado**
+como eu já descrevi tudo para o GBS, não vou fazer de novo para o Recuperado então tá aí o código
+
+```R
+#selecionando as amostras de REC
+gbs_CPM_rec <- gbs_CPM[,c("09","07","16","30","29","27","28","08","38","39")]
+
+#rodando a an?lise de identifica??o dos m?dulos de co-express?o
+cem_rec <- cemitool(expr= gbs_CPM_rec,
+                #annot = sample_annot,
+                force_beta = T)
+
+#gerando uma tabela mostrando os genes coexpressos e o respectivo m?dulo
+Modules_genes_rec <- module_genes(cem_rec)
+
+
+#enriquecimento com termos de GO para processos biol?gicos
+enrichr_M1_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M1",]$genes,
+                           "GO_Biological_Process_2018")$GO_Biological_Process_2018
+#selecionando termos com pvalor ajustado unferior a 0.05
+#enrichr_M1_rec <- subset(enrichr_M1_rec, enrichr_M1_rec$Adjusted.P.value < 0.05)
+#adicionando uma coluna identificando o m?dulo
+enrichr_M1_rec$Module <- rep("M1", nrow(enrichr_M1_rec))
+
+enrichr_M2_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M2",]$genes,
+                           "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M2_rec$Module <- rep("M2", nrow(enrichr_M2_rec))
+
+enrichr_M3_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M3",]$genes,
+                           "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M3_rec$Module <- rep("M3", nrow(enrichr_M3_rec))
+
+enrichr_M4_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M4",]$genes,
+                           "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M4_rec$Module <- rep("M4", nrow(enrichr_M4_rec))
+
+enrichr_M5_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M5",]$genes,
+                           "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M5_rec$Module <- rep("M5", nrow(enrichr_M5_rec))
+
+enrichr_M6_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M6",]$genes,
+                           "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M6_rec$Module <- rep("M6", nrow(enrichr_M6_rec))
+
+enrichr_M7_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M7",]$genes,
+                           "GO_Biological_Process_2018")$GO_Biological_Process_2018
+#enrichr_M7_rec <- subset(enrichr_M7_rec, enrichr_M7_rec$Adjusted.P.value < 0.05)
+enrichr_M7_rec$Module <- rep("M7", nrow(enrichr_M7_rec))
+
+enrichr_M8_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M8",]$genes,
+                           "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M8_rec$Module <- rep("M8", nrow(enrichr_M8_rec))
+
+enrichr_M9_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M9",]$genes,
+                           "GO_Biological_Process_2018")$GO_Biological_Process_2018
+#enrichr_M9_rec <- subset(enrichr_M9_rec, enrichr_M9_rec$Adjusted.P.value < 0.05)
+enrichr_M9_rec$Module <- rep("M9", nrow(enrichr_M9_rec))
+
+enrichr_M10_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M10",]$genes,
+                            "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M10_rec$Module <- rep("M10", nrow(enrichr_M10_rec))
+
+
+#enriquecimento com termos de GO para processos biol?gicos
+enrichr_M11_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M11",]$genes,
+                            "GO_Biological_Process_2018")$GO_Biological_Process_2018
+#selecionando termos com pvalor ajustado unferior a 0.05
+#enrichr_M11_rec <- subset(enrichr_M1_rec, enrichr_M1_rec$Adjusted.P.value < 0.05)
+#adicionando uma coluna identificando o m?dulo
+enrichr_M11_rec$Module <- rep("M11", nrow(enrichr_M11_rec))
+
+enrichr_M12_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M12",]$genes,
+                            "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M12_rec$Module <- rep("M12", nrow(enrichr_M12_rec))
+
+enrichr_M13_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M13",]$genes,
+                            "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M13_rec$Module <- rep("M13", nrow(enrichr_M13_rec))
+
+enrichr_M14_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M14",]$genes,
+                            "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M14_rec$Module <- rep("M14", nrow(enrichr_M14_rec))
+
+enrichr_M15_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M15",]$genes,
+                            "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M15_rec$Module <- rep("M15", nrow(enrichr_M15_rec))
+
+enrichr_M16_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M16",]$genes,
+                            "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M16_rec$Module <- rep("M16", nrow(enrichr_M16_rec))
+
+enrichr_M17_rec <- enrichr( Modules_genes_rec[ Modules_genes_rec$modules %in% "M17",]$genes,
+                            "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M17_rec$Module <- rep("M17", nrow(enrichr_M17_rec))
+
+
+GO_enrichment_rec <- rbind(enrichr_M1_rec, enrichr_M2_rec, enrichr_M3_rec, enrichr_M4_rec, enrichr_M5_rec, enrichr_M6_rec,
+                       enrichr_M7_rec, enrichr_M8_rec, enrichr_M9_rec, enrichr_M10_rec, enrichr_M11_rec, enrichr_M12_rec,
+                       enrichr_M13_rec,enrichr_M14_rec,enrichr_M15_rec,enrichr_M16_rec,enrichr_M17_rec)
+
+GO_enrichment_rec_pv <- subset(GO_enrichment_rec, GO_enrichment_rec$Adjusted.P.value < 0.05)
+
+
+
+
+#selecionando somente as intera??es no M1
+idx1 <- query_inter$from %in% Modules_genes_rec$genes
+idx2 <- query_inter$to %in% Modules_genes_rec$genes
+inter <- query_inter[idx1 & idx2,]
+inter <- inter[,c(1,2)]
+colnames(inter) <- c("gene1symbol", "gene2symbol")
+
+interactions_data(cem_rec) <- inter # add interactions
+cem_rec <- plot_interactions(cem_rec) # generate plot
+plots <- show_plot(cem_rec, "interaction") # view the plot for the first module
+
+
+
+
+interactions_data(cem_rec) <- inter # add interactions
+cem <- plot_interactions(cem) # generate plot
+plots <- show_plot(cem, "interaction") # view the plot for the first module
+
+ggarrange(plots$M1, plots$M2, plots$M3, plots$M4, plots$M5, plots$M6,
+          plots$M7, plots$M8, plots$M9, plots$M10, plots$M11, plots$M12,
+          plots$M13, plots$M14, plots$M15, plots$M16, plots$M17,
+          ncol = 4, nrow = 5)
+
+
+
+mod_col2 <- c("#b30000ff","#b64a09ff","#b68a09ff","#9eb506ff","#5eb508ff",
+              "#1eb609ff","#0bb636ff","#33c28dff","#00b3b3ff","#0070b3ff",
+              "#2b50c0ff","#1600b3ff","#1600b3ff","#9f08b5ff","#b30086ff",
+              "#b30043ff","#d57373ff")
+
+
+
+
+
+xx <- barplot(sort(table(Modules_genes_rec$modules), decreasing = T),
+              xlab = "Modules",
+              ylab = "# co-expressed genes",
+              col = mod_col2,
+              border = F)
+
+text(x = xx,
+     y = sort(table(Modules_genes_rec$modules), decreasing = T)-c(100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+     label = sort(table(Modules_genes_rec$modules), decreasing = T),
+     pos = 3, cex = 0.8, col = "black", font = 2)
+
+
+
+
+pM3_rec <- ggplot(data = subset(enrichr_M3_rec, enrichr_M3_rec$Adjusted.P.value < 0.05), aes(x=reorder(Term,-Adjusted.P.value,), y = -log10(Adjusted.P.value)))+
+  geom_col(aes(fill = -log10(Adjusted.P.value))) +
+  scale_fill_gradient2(low = "white",
+                       high = "#b68a09ff")+
+  coord_flip() +
+  labs(x = "",
+       y = "",
+       title = "GO (BP) Terms for M3")+
+  theme_bw()
+
+ggarrange(plots$M3, pM3_rec, nrow = 1, ncol = 2)
+
+pM13_rec <- ggplot(data = subset(enrichr_M13_rec, enrichr_M13_rec$Adjusted.P.value < 0.05), aes(x=reorder(Term,-Adjusted.P.value,), y = -log10(Adjusted.P.value)))+
+  geom_col(aes(fill = -log10(Adjusted.P.value))) +
+  scale_fill_gradient2(low = "white",
+                       high = "#1600b3ff")+
+  coord_flip() +
+  labs(x = "",
+       y = "",
+       title = "GO (BP) Terms for M13")+
+  theme_bw()
+
+ggarrange(plots$M13, pM13_rec, nrow = 1, ncol = 2)
+
+```
+
+
+
+
+
+
+
+
+
 ### 5 - Identificando os tipos celulares
 
 Para essa etapa das análises, irei utilizar o (CTen)[http://www.influenza-x.org/~jshoemaker/cten/upload.php]
@@ -977,5 +1165,5 @@ pheatmap(mat = CTen.REC[!rowSums(CTen.REC) <  1.5,],
 
 ```
 
-!()[https://github.com/diegogotex/GBS/blob/master/Figs/CTen_GBS.png]
-!()[https://github.com/diegogotex/GBS/blob/master/Figs/CTen_REC.png]
+![](https://github.com/diegogotex/GBS/blob/master/Figs/CTen_GBS.png)
+![](https://github.com/diegogotex/GBS/blob/master/Figs/CTen_REC.png)
