@@ -60,13 +60,8 @@ Ao todo, são 20 amostras: 5 GBS; 9 GBS Recuperado (GBS_rec); 6 Controle (CTL).
 
 
 
-
-
-<<<<<<< HEAD
 # Expressão Diferencial
-=======
-## Análises
->>>>>>> d07d46a53e2f9a9dc6db1e5ef90b18930370b0b5
+
 ### 1 - Peparando as bibiotecas
 
 As bibliotecas estão no formato **fastq** e comprimidas pelo **GZIP**, cada uma delas tem o final **.fastq.gz**. Cada amostra coletada foi sequenciada em 8 lanes distintas, então teremos para cada uma 16 arquivos enumerados de Lane1, Lane2, .. Lane8, com os pares (paired-end) do sequenciamento R1 e R2. Desse modo, teremos 320 arquivos.
@@ -200,7 +195,7 @@ dds <- DESeqDataSetFromMatrix(countData=countdata, colData=coldata, design=~cond
 
 
 ```
-<<<<<<< HEAD
+
 ### 4 - PCA
 
 Calculando a PCA e pegando as informações para gerar um plit independente do pacote (DESes2):
@@ -241,6 +236,9 @@ plot(pca$data$PC1,
 #box()
 abline(h=0,v=0, lty=2)
 ```
+![resultado da PCA](https://github.com/diegogotex/GBS/blob/master/Figs/PCA.svg)
+
+
 Utilizando as coordenadas da PCA para realizar uma ANOVA, associando o fenótipo das pessoas com a posição na coordenada da PCA:
 
 ```R
@@ -267,10 +265,6 @@ ggplot2::ggplot(pcadata, aes(x=group, y=PC1, fill=group)) +
 ```
 
 ### 5 - Análise de Expressão Diferencial
-=======
-
-### 4 - Análise de Expressão Diferencial
->>>>>>> d07d46a53e2f9a9dc6db1e5ef90b18930370b0b5
 
 gerando as tabelas com a análise de expressão diferencial entre os grupos GBSxCTL; GBSxREC; RECxCTL.
 
@@ -393,7 +387,7 @@ rownames(DE_all) <- DE_all$gene_id
 DE_mod_all <- DE_all[,c(9,18,27,6,16,25,10,19,28,7,8)]
 
 ```
-<<<<<<< HEAD
+
 Agora nós vamos calcular o z-value para os valores de expressão de cada um dos genes para isso, primeiro vamos pegar a normalização da expressão de cada gene com valores em FPKM:
 
 ```R
@@ -534,5 +528,3 @@ CP_comb_GO_tab_kept <- subset(CP_comb_GO_tab, CP_comb_GO_tab$ID %in% CP_comb_GO_
 # **Co-expressão**
 
 ### 1 - C
-=======
->>>>>>> d07d46a53e2f9a9dc6db1e5ef90b18930370b0b5
