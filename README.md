@@ -834,11 +834,11 @@ ggplot(data = enrichr_M7, aes(x=reorder(Term,-Adjusted.P.value,), y = -log10(Adj
 
 ```
 
-!()[https://github.com/diegogotex/GBS/blob/master/Figs/GO_terms_M1.png]
+![](https://github.com/diegogotex/GBS/blob/master/Figs/GO_terms_M1.png)
 <br/>
-!()[https://github.com/diegogotex/GBS/blob/master/Figs/GO_terms_M7.png]
+![](https://github.com/diegogotex/GBS/blob/master/Figs/GO_terms_M7.png)
 <br/>
-!()[https://github.com/diegogotex/GBS/blob/master/Figs/GO_terms_M9.png]
+![](https://github.com/diegogotex/GBS/blob/master/Figs/GO_terms_M9.png)
 <br/>
 
 
