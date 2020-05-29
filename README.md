@@ -236,9 +236,10 @@ plot(pca$data$PC1,
 #box()
 abline(h=0,v=0, lty=2)
 ```
-![resultado da PCA](https://github.com/diegogotex/GBS/blob/master/Figs/PCA.svg)
+![resultado da PCA](https://github.com/diegogotex/GBS/blob/master/Figs/PCA.svg)\
 
-
+<br/>
+<br/>
 Utilizando as coordenadas da PCA para realizar uma ANOVA, associando o fenótipo das pessoas com a posição na coordenada da PCA:
 
 ```R
