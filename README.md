@@ -469,9 +469,7 @@ abline(v=1,col="green", lty = 2, cex= 3)
 abline(v=-1,col="green", lty = 2, cex= 3)
 
 ```
-<center>
 ![Volcanoplot](https://github.com/diegogotex/GBS/blob/master/Figs/volcanoplot.png)
-</center>
 <br/>
 
 
@@ -505,9 +503,8 @@ text(c(2,-2),
      col = alpha("gray44", 0.7))
 
 ```
-<center>
 ![Scatterplot](https://github.com/diegogotex/GBS/blob/master/Figs/xplot.png)
-</center>
+
 
 
 ### 6 - Análise de enriquecimento
@@ -525,9 +522,8 @@ CP_comb_GO_tab <- subset(CP_comb_GO@result, CP_comb_GO@result$qvalue <= 0.05)
 
 emapplot(CP_comb_GO, layout="kk")
 ```
-<center>
-![Emaplot](https://github.com/diegogotex/GBS/blob/master/Figs/emmaplot.png)
-</center>
+![Emaplot](https://github.com/diegogotex/GBS/blob/master/Figs/emmaplot.png?style=centerme)
+
 
 Para reduzir a quantidade de Termos enriquecidos, vamos utilizar a ferramenta [**REVIGO**](http://revigo.irb.hr/), com a opção Tiny, para pegarmos somente os termos com menos redundância e mais significativos. Em seguida importamos no R para reduzir na tabela interna:
 
