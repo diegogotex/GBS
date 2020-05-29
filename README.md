@@ -236,7 +236,7 @@ plot(pca$data$PC1,
 #box()
 abline(h=0,v=0, lty=2)
 ```
-![resultado da PCA](https://github.com/diegogotex/GBS/blob/master/Figs/PCA.svg)\
+![resultado da PCA](https://github.com/diegogotex/GBS/blob/master/Figs/PCA.png)
 
 <br/>
 <br/>
