@@ -522,8 +522,8 @@ CP_comb_GO_tab <- subset(CP_comb_GO@result, CP_comb_GO@result$qvalue <= 0.05)
 
 emapplot(CP_comb_GO, layout="kk")
 ```
-![Emaplot](https://github.com/diegogotex/GBS/blob/master/Figs/emmaplot.png?style=centerme)
-
+![Emaplot](https://github.com/diegogotex/GBS/blob/master/Figs/emmaplot.png)
+<br/>
 
 Para reduzir a quantidade de Termos enriquecidos, vamos utilizar a ferramenta [**REVIGO**](http://revigo.irb.hr/), com a opção Tiny, para pegarmos somente os termos com menos redundância e mais significativos. Em seguida importamos no R para reduzir na tabela interna:
 
@@ -533,7 +533,38 @@ CP_comb_GO_tab_REVIGO <- CP_comb_GO_tab_REVIGO[CP_comb_GO_tab_REVIGO$eliminated 
 CP_comb_GO_tab_kept <- subset(CP_comb_GO_tab, CP_comb_GO_tab$ID %in% CP_comb_GO_tab_REVIGO$term_ID)
 
 ```
+<br/>
 
+| ID         | Description                                  | GeneRatio | BgRatio | p.adjust |
+|------------|----------------------------------------------|:---------:|:-------:|:--------:|
+| GO:0050808 | synapse organization                         |     65    |   394   |  5.3e-13 |
+| GO:0042391 | regulation of membrane potential             |     58    |   374   |  2.0e-10 |
+| GO:0007416 | synapse assembly                             |     37    |   172   |  2.0e-10 |
+| GO:0006836 | neurotransmitter transport                   |     44    |   241   |  3.5e-10 |
+| GO:0030198 | extracellular matrix organization            |     51    |   334   |  3.9e-09 |
+| GO:0050804 | modulation of chemical synaptic transmission |     56    |   393   |  5.1e-09 |
+| GO:0034765 | regulation of ion transmembrane transport    |     61    |   453   |  5.4e-09 |
+| GO:0043062 | extracellular structure organization         |     54    |   387   |  2.0e-08 |
+| GO:0007215 | glutamate receptor signaling pathway         |     20    |    87   |  5.5e-06 |
+| GO:0034776 | response to histamine                        |     7     |    11   |  4.4e-05 |
+| GO:0099504 | synaptic vesicle cycle                       |     24    |   162   |  3.7e-04 |
+| GO:0050919 | negative chemotaxis                          |     9     |    26   |  3.8e-04 |
+| GO:0008037 | cell recognition                             |     20    |   129   |  9.1e-04 |
+| GO:0017156 | calcium ion regulated exocytosis             |     19    |   127   |  2.0e-03 |
+| GO:0007158 | neuron cell-cell adhesion                    |     6     |    15   |  3.4e-03 |
+| GO:0034330 | cell junction organization                   |     30    |   277   |  5.5e-03 |
+| GO:0007218 | neuropeptide signaling pathway               |     12    |    66   |  5.6e-03 |
+| GO:0034332 | adherens junction organization               |     18    |   134   |  8.1e-03 |
+| GO:0048511 | rhythmic process                             |     30    |   287   |  9.0e-03 |
+| GO:0070252 | actin-mediated cell contraction              |     15    |   115   |  2.4e-02 |
+| GO:0019932 | second-messenger-mediated signaling          |     33    |   360   |  3.0e-02 |
+| GO:0071229 | cellular response to acid chemical           |     21    |   199   |  3.7e-02 |
+| GO:0043030 | regulation of macrophage activation          |     10    |    66   |  4.1e-02 |
+| GO:0089718 | amino acid import across plasma membrane     |     5     |    19   |  4.4e-02 |
+| GO:0050678 | regulation of epithelial cell proliferation  |     32    |   369   |  5.8e-02 |
+| GO:0043252 | sodium-independent organic anion transport   |     4     |    13   |  5.8e-02 |
+
+<br/>
 
 ----
 # **Co-expressão**
