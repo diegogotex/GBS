@@ -62,7 +62,11 @@ Ao todo, são 20 amostras: 5 GBS; 9 GBS Recuperado (GBS_rec); 6 Controle (CTL).
 
 
 
+<<<<<<< HEAD
 # Expressão Diferencial
+=======
+## Análises
+>>>>>>> d07d46a53e2f9a9dc6db1e5ef90b18930370b0b5
 ### 1 - Peparando as bibiotecas
 
 As bibliotecas estão no formato **fastq** e comprimidas pelo **GZIP**, cada uma delas tem o final **.fastq.gz**. Cada amostra coletada foi sequenciada em 8 lanes distintas, então teremos para cada uma 16 arquivos enumerados de Lane1, Lane2, .. Lane8, com os pares (paired-end) do sequenciamento R1 e R2. Desse modo, teremos 320 arquivos.
@@ -196,6 +200,7 @@ dds <- DESeqDataSetFromMatrix(countData=countdata, colData=coldata, design=~cond
 
 
 ```
+<<<<<<< HEAD
 ### 4 - PCA
 
 Calculando a PCA e pegando as informações para gerar um plit independente do pacote (DESes2):
@@ -262,6 +267,10 @@ ggplot2::ggplot(pcadata, aes(x=group, y=PC1, fill=group)) +
 ```
 
 ### 5 - Análise de Expressão Diferencial
+=======
+
+### 4 - Análise de Expressão Diferencial
+>>>>>>> d07d46a53e2f9a9dc6db1e5ef90b18930370b0b5
 
 gerando as tabelas com a análise de expressão diferencial entre os grupos GBSxCTL; GBSxREC; RECxCTL.
 
@@ -384,143 +393,3 @@ rownames(DE_all) <- DE_all$gene_id
 DE_mod_all <- DE_all[,c(9,18,27,6,16,25,10,19,28,7,8)]
 
 ```
-Agora nós vamos calcular o z-value para os valores de expressão de cada um dos genes para isso, primeiro vamos pegar a normalização da expressão de cada gene com valores em FPKM:
-
-```R
-mcols(dds)$basepairs <- subset(countdata_raw$Length, rownames(countdata_raw) %in% rownames(counts(dds)))
-fpkm_all  <- fpkm(dds, robust = T)
-colnames(fpkm_all) <- c("01.GBS", "02.GBS", "13.GBS", "25.GBS", "26.GBS", "04.GBS",
-                        "09.REC", "07.REC", "16.REC", "30.REC", "29.REC", "27.REC", "28.REC", "08.REC", "38.REC", "39.REC",
-                        "10.CTL", "11.CTL", "19.CTL", "20.CTL", "33.CTL", "34.CTL")
-
-```
-
-agora vamos calcular o z-value:
-
-```R
-
-log_fpkm <- log2(fpkm_all+0.01)
-#calculate the mean row by bow
-sum_fpkm <- rowMeans(log_fpkm)
-#calculate the standard deviation row by bow
-sd_fpkm <- rowSds(log_fpkm)
-
-#creating a dataframe with the same number of rows and columns as log_fpkm df without data
-zscore_fpkm <- matrix(data=NA, nrow = nrow(log_fpkm), ncol = ncol(log_fpkm))
-colnames(zscore_fpkm) <- colnames(log_fpkm)
-rownames(zscore_fpkm) <- rownames(log_fpkm)
-
-#populating the dataframe with zscore values
-for (i in 1:nrow(log_fpkm)){
-  zscore_fpkm[i,] = (log_fpkm[i,]-sum_fpkm[i])/sd_fpkm[i]
-}
-
-```
-
-
-Plotando o volcano plot para os três contrastes:
-
-```R
-
-par(mfrow=c(1,3))
-
-#GBSvsCTL
-with(DE_all, plot(log2FoldChange_mod_GBSctl, -log10(padj_GBSctl), pch=16, axes=T,
-                      xlab = "Log2(FC)", ylab = "-Log10(Pvalue-Adjusted)", main = "GBS vs CTL" ,
-                      xlim = c(-5,8), ylim = c(0,7), col=NA))
-
-with(subset(DE_all, exp_GBSctl == 0 & abs(padj_GBSctl) != 1), points(log2FoldChange_GBSctl,-log10(padj_GBSctl), pch=16, col=alpha("black", 0.3)))
-with(subset(DE_all, exp_GBSctl == 1), points(log2FoldChange_GBSctl,-log10(padj_GBSctl), pch=16, col=alpha("#C35B52", 0.3)))
-with(subset(DE_all, exp_GBSctl == -1), points(log2FoldChange_GBSctl,-log10(padj_GBSctl), pch=16, col=alpha("#69B1B7", 0.3)))
-abline(h=1.3,col="green", lty = 2, cex= 3)
-abline(v=1,col="green", lty = 2, cex= 3)
-abline(v=-1,col="green", lty = 2, cex= 3)
-
-#GBSvsREC
-with(DE_all, plot(log2FoldChange_mod_GBSrec, -log10(padj_GBSrec), pch=16, axes=T,
-                  xlab = "Log2(FC)", ylab = "-Log10(Pvalue-Adjusted)", main = "GBS vs REC" ,
-                  xlim = c(-5,8), ylim = c(0,7), col=NA))
-
-with(subset(DE_all, exp_GBSrec == 0 & abs(padj_GBSrec) != 1), points(log2FoldChange_GBSrec,-log10(padj_GBSrec), pch=16, col=alpha("black", 0.3)))
-with(subset(DE_all, exp_GBSrec == 1), points(log2FoldChange_GBSrec,-log10(padj_GBSrec), pch=16, col=alpha("#C35B52", 0.3)))
-with(subset(DE_all, exp_GBSrec == -1), points(log2FoldChange_GBSrec,-log10(padj_GBSrec), pch=16, col=alpha("#69B1B7", 0.3)))
-abline(h=1.3,col="green", lty = 2, cex= 3)
-abline(v=1,col="green", lty = 2, cex= 3)
-abline(v=-1,col="green", lty = 2, cex= 3)
-
-
-#GBSvsREC
-with(DE_all, plot(log2FoldChange_mod_GBSrec, -log10(padj_RECctl), pch=16, axes=T,
-                  xlab = "Log2(FC)", ylab = "-Log10(Pvalue-Adjusted)", main = "REC vs CTL" ,
-                  xlim = c(-4,4), ylim = c(0,4), col=NA))
-
-with(subset(DE_all, exp_RECctl == 0 & abs(padj_RECctl) != 1), points(log2FoldChange_RECctl,-log10(padj_RECctl), pch=16, col=alpha("black", 0.3)))
-with(subset(DE_all, exp_RECctl == 1), points(log2FoldChange_RECctl,-log10(padj_RECctl), pch=16, col=alpha("#C35B52", 0.3)))
-with(subset(DE_all, exp_RECctl == -1), points(log2FoldChange_RECctl,-log10(padj_RECctl), pch=16, col=alpha("#69B1B7", 0.3)))
-abline(h=1.3,col="green", lty = 2, cex= 3)
-abline(v=1,col="green", lty = 2, cex= 3)
-abline(v=-1,col="green", lty = 2, cex= 3)
-
-```
-
-Plotando o scatterplot comparando **GBS vs REC** com **GBS vs CTL**:
-
-```R
-DE_mod_all_sub <- subset(DE_mod_all, DE_mod_all$exp_GBSctl == 1 & DE_mod_all$exp_GBSrec == 1 | DE_mod_all$exp_GBSctl == -1 & DE_mod_all$exp_GBSrec == -1)
-
-with(DE_mod_all, plot(log2FoldChange_mod_GBSctl, log2FoldChange_mod_GBSrec, pch=16, xlab = "GBSctl Genes Log2(FC)", ylab= "GBSrec Genes Log2(FC)", col = "white", xlim = c(-8,8), ylim = c(-8,8), main = NA))
-with(subset(DE_mod_all, log2FoldChange_mod_GBSctl > 0 & log2FoldChange_mod_GBSrec > 0), points(log2FoldChange_mod_GBSctl, log2FoldChange_mod_GBSrec, pch=16, col = alpha("#C35B52", 0.3) , cex = 1))
-with(subset(DE_mod_all, log2FoldChange_mod_GBSctl > 0 & log2FoldChange_mod_GBSrec < 0), points(log2FoldChange_mod_GBSctl, log2FoldChange_mod_GBSrec, pch=16, col = alpha("gray44", 0.5), cex = 1))
-with(subset(DE_mod_all, log2FoldChange_mod_GBSctl < 0 & log2FoldChange_mod_GBSrec < 0), points(log2FoldChange_mod_GBSctl, log2FoldChange_mod_GBSrec, pch=16, col = alpha("#69B1B7", 0.3), cex = 1))
-with(subset(DE_mod_all, log2FoldChange_mod_GBSctl < 0 & log2FoldChange_mod_GBSrec > 0), points(log2FoldChange_mod_GBSctl, log2FoldChange_mod_GBSrec, pch=16, col = alpha("gray44", 0.5), cex = 1))
-abline(h=0, col="gray44", lty = 3)
-abline(v=0, col="gray44", lty = 3)
-abline(lm(DE_mod_all_sub$log2FoldChange_mod_GBSrec~DE_mod_all_sub$log2FoldChange_mod_GBSctl, data = DE_mod_all_sub),
-       col="green")
-text(c(0.5,0.5),c(-1,-2), labels = c(expression('R'^"2"*'=0.75'), expression('p-value=2.2'^"-16")), font = 2, col = alpha("green",0.7), pos = 4)
-
-
-text(c(2,-2),
-     c(7,-7),
-     labels = c(nrow(subset(DE_mod_all, log2FoldChange_mod_GBSctl > 0 & log2FoldChange_mod_GBSrec > 0)),
-                #nrow(subset(DE_mod_all, log2FoldChange_mod_GBSctl > 0 & log2FoldChange_mod_GBSrec < 0)),
-                nrow(subset(DE_mod_all, log2FoldChange_mod_GBSctl < 0 & log2FoldChange_mod_GBSrec < 0))
-                #nrow(subset(DE_mod_all, log2FoldChange_mod_GBSctl < 0 & log2FoldChange_mod_GBSrec > 0))
-     ),
-     #pos = 1,
-     cex = 1.5,
-     font = 2,
-     col = alpha("gray44", 0.7))
-
-```
-
-### 6 - Análise de enriquecimento
-
-Para fazer a análise de enriquecimento, nós vamos utilizar o pacote **ClusterProfiler** junto ao pacote **org.Hs.eg.db**:
-
-```R
-CP_comb_GO <-enrichGO(gene = c(DEGs_GBSctl$SYMBOL, DEGs_GBSrec$SYMBOL),
-                      OrgDb = org.Hs.eg.db,
-                      keyType = "SYMBOL",
-                      ont = "BP",
-                      qvalueCutoff = 0.05)
-
-CP_comb_GO_tab <- subset(CP_comb_GO@result, CP_comb_GO@result$qvalue <= 0.05)
-
-emapplot(CP_comb_GO, layout="kk")
-```
-
-Para reduzir a quantidade de Termos enriquecidos, vamos utilizar a ferramenta [**REVIGO**](http://revigo.irb.hr/), com a opção Tiny, para pegarmos somente os termos com menos redundância e mais significativos. Em seguida importamos no R para reduzir na tabela interna:
-
-```R
-CP_comb_GO_tab_REVIGO <- read.csv("CP_comb_GO_tab_REVIGO.csv", stringsAsFactors = F)
-CP_comb_GO_tab_REVIGO <- CP_comb_GO_tab_REVIGO[CP_comb_GO_tab_REVIGO$eliminated == 0,]
-CP_comb_GO_tab_kept <- subset(CP_comb_GO_tab, CP_comb_GO_tab$ID %in% CP_comb_GO_tab_REVIGO$term_ID)
-
-```
-
-
-----
-# **Co-expressão**
-
-### 1 - C
