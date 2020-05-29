@@ -715,8 +715,8 @@ pheatmap(t(subset(zscore_CPM, rownames(zscore_CPM) %in% Modules_genes$genes)),
 
 
 ```
-
-
+![](https://github.com/diegogotex/GBS/blob/master/Figs/heatmap_ModGBS.png)
+<br/>
 
 ### 3 - Enriquecimento com termos de GO
 
@@ -850,6 +850,7 @@ colnames(ref) <- c("gene_id","SYMBOL")
 **2.** Em seguida eu vou puxar as informações do ensembl
 
 ```R
+library(biomaRt)
 # Conectar a um database
 ensembl <- useMart("ensembl")
 
@@ -864,3 +865,106 @@ query <- getBM(attributes=c("ensembl_gene_id","ensembl_peptide_id","entrezgene_i
 ```
 
 **3.** Pegando as informações de interação PPI no STRING
+
+```R
+library(STRINGdb)
+
+#gerando um objeto do string associado a versao e ao organismo
+string_db <- STRINGdb$new(version="10", species=9606, score_threshold=0, input_directory="" )
+
+#mapeando os IDs no string
+onto_query_mapped <- string_db$map(query, colnames(query)[2], removeUnmappedRows = TRUE )
+
+# Recupere as interacoes do string online
+string_query_dat <- string_db$get_interactions(onto_query_mapped$STRING_id)
+
+```
+
+**4.** Vou remover as interações com os scores baixos (inferiores a 0.9), com base nas informações de **coexpression**, **experiments** e **database** do STRING 10.
+
+O script para fazer essa filtragem foi escrito por Iara, chama-se [source_string.R](https://github.com/diegogotex/Rcodes/blob/master/source_stringdb.R).
+
+```R
+
+# Carregue a funcao 'combinescores' do arquivo 'source_stringdb.R', filtre as interacoes segundo as evidencias que voce julgue relevantes
+# e combine os scores associados.
+source("source_stringdb.R")
+res_query <- combinescores(string_query_dat, evidences = c("coexpression","experiments","database"), confLevel=0.9)
+# Remova as  informacoes sem utilidade e remova os id/links nao anotados.
+res_query$from <- substr(res_query$from,6,1000)
+res_query$to <- substr(res_query$to,6,1000)
+query_inter <- res_query
+
+#gerando uma tabela de interacao por SYMBOL
+query_inter <- merge(query_inter, query, by.x = "from", by.y = "ensembl_peptide_id", all.x = T)
+query_inter <- merge(query_inter, query, by.x = "to", by.y = "ensembl_peptide_id", all.x = T)
+query_inter <- query_inter[,c(6,9,3)]
+colnames(query_inter) <- c("from", "to","combined_score")
+
+
+
+#selecionando somente as interacoes no M1
+idx1 <- query_inter$from %in% Modules_genes$genes
+idx2 <- query_inter$to %in% Modules_genes$genes
+inter <- query_inter[idx1 & idx2,]
+inter <- inter[,c(1,2)]
+
+#nomeando as colunas de moco que o CEMiTools reconheca
+colnames(inter) <- c("gene1symbol", "gene2symbol")
+
+```
+
+**5.** Associando as informações de PPI ao dado de co-expressão do CEMiTools
+```R
+interactions_data(cem) <- inter # add interactions
+cem <- plot_interactions(cem) # generate plot
+plots <- show_plot(cem, "interaction") # view the plot for the first module
+
+#plotando o módulo 1
+plots[1]
+```
+![](https://github.com/diegogotex/GBS/blob/master/Figs/M_ALL.png)
+
+### 4 - Identificando os tipos celulares
+
+Para essa etapa das análises, irei utilizar o (CTen)[http://www.influenza-x.org/~jshoemaker/cten/upload.php]
+
+O dado de entrada é a tabela de Gene e o respectivo módulo.
+
+```R
+CTen.GBS <- read.csv("~/Dropbox/DualSeq_IMT/GBS_NEW/Coexp/CellType/CTen/Enrichment_GBS.csv",
+                     stringsAsFactors = F,
+                     row.names = 1)
+
+CTen.GBS <- CTen.GBS[,c("M1","M2","M3","M4","M5","M6",
+                        "M7","M8","M9","M10","M11","M12")]
+
+#colocando os valores abaixo de 1 como 0
+CTen.GBS[CTen.GBS < 1] <- 0
+
+pheatmap(#mat = CTen.GBS,
+  mat = CTen.GBS[!rowSums(CTen.GBS) <  1.5,],
+  cluster_rows = T,
+  cluster_cols = F,
+  fontsize_row = 8,
+  border_color = "white")
+
+
+CTen.REC <- read.csv("~/Dropbox/DualSeq_IMT/GBS_NEW/Coexp/CellType/CTen/Enrichment_REC.csv",
+                     stringsAsFactors = F,
+                     row.names = 1)
+
+CTen.REC <- CTen.REC[,c("M1","M2","M3","M4","M5","M6","M7","M8"
+                        ,"M9","M10","M11","M12","M13","M14","M15","M16","Not.Correlated")]
+
+CTen.REC <- CTen.REC[,-17]
+
+CTen.REC[CTen.REC < 1] <- 0
+
+pheatmap(mat = CTen.REC[!rowSums(CTen.REC) <  1.5,],
+         cluster_rows = T,
+         cluster_cols = F,
+         fontsize_row = 8,
+         border_color = "white")
+
+```
