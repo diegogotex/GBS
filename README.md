@@ -569,4 +569,298 @@ CP_comb_GO_tab_kept <- subset(CP_comb_GO_tab, CP_comb_GO_tab$ID %in% CP_comb_GO_
 ----
 # **Co-expressão**
 
-### 1 - C
+Para as análises de co-expressão, eu vou carregar novamente todas as bibliotecas e arquivos, já que eu fiz separado das análises de expressão diferencial.
+
+### 1 - Carregando os dados
+
+```R
+library(dplyr)
+
+countdata <- read.table("~/Dropbox/DualSeq_IMT/GBS_NEW/Counts_SYMBOL.txt",
+                        header = T,
+                        row.names = 1,
+                        check.names = F)
+
+#tira os .bam do nome das amostras
+colnames(countdata) <- gsub("\\.[sb]am$", "", colnames(countdata))
+colnames(countdata) <- gsub("bam/", "", colnames(countdata))
+
+#filtro pros dados a serem analisados
+countdata <- countdata %>% dplyr:: select(grep("Length", names(countdata)),
+                                          grep("01", names(countdata)), #GBS_dis_pair
+                                          grep("02", names(countdata)), #GBS_dis_pair
+                                          grep("13", names(countdata)), #GBS_dis_pair
+                                          grep("25", names(countdata)), #GBS_dis_pair
+                                          grep("26", names(countdata)), #GBS_dis_pair
+                                          grep("04", names(countdata)), #GBS_dis
+
+                                          grep("09", names(countdata)), #GBS_rec_pair
+                                          grep("07", names(countdata)), #GBS_rec_pair
+                                          grep("16", names(countdata)), #GBS_rec_pair
+                                          grep("30", names(countdata)), #GBS_rec_pair
+                                          grep("29", names(countdata)), #GBS_rec_pair
+                                          grep("27", names(countdata)), #GBS_rec
+                                          grep("28", names(countdata)), #GBS_rec
+                                          grep("08", names(countdata)), #GBS_rec
+                                          grep("38", names(countdata)), #GBS_rec
+                                          grep("39", names(countdata)), #GBS_rec
+
+                                          grep("10", names(countdata)), #control
+                                          grep("11", names(countdata)), #control
+                                          grep("19", names(countdata)), #control
+                                          grep("20", names(countdata)), #control
+                                          grep("33", names(countdata)), #control
+                                          grep("34", names(countdata)) #control
+)
+
+```
+
+Nessa parte eu irei trabalhar com a expressão normalizada em CPM (Counts Per Million). Utilizarei a função cpm() do pacote [edgeR](https://www.bioconductor.org/packages/release/bioc/html/edgeR.html)
+
+```R
+library(edgeR)
+
+#trasnformando a express?o dos genes em CPM
+gbs_CPM <- as.data.frame(cpm(countdata[,2:ncol(countdata)], log=T, gene.length=countdata$Length))
+
+```
+
+Para identificar os módulos de genes co-expressos, eu vou utilizar o pacote [CEMiTool](https://www.bioconductor.org/packages/release/bioc/html/CEMiTool.html). Primeiro eu vou fazer a análise para o grupo de amostras coletadas de pessoas com GBS:
+
+### 2 - Identificando módulos de co-expressão
+
+```R
+#selecionando as amostras de GBS
+gbs_CPM_dis <- gbs_CPM[,c("01","02","13","25","26","04")]
+
+#rodando a análise de identificacao dos m?dulos de co-express?o
+cem <- cemitool(expr= gbs_CPM_dis,
+                force_beta = T)
+
+#gerando uma tabela mostrando os genes coexpressos e o respectivo modulo
+Modules_genes <- module_genes(cem)
+```
+
+Vamos calcular o Z-value e plotar o heatmap mostrando o genes nos módulos.
+
+```R
+library(pheatmap)
+library(genefilter)
+
+#calculando a soma linha por linha
+sum_CPM <- rowMeans(gbs_CPM)
+#calculate the standard deviation row by bow
+sd_CPM <- rowSds(gbs_CPM)
+
+#creating a dataframe with the same number of rows and columns as log_fpkm df without data
+zscore_CPM <- matrix(data=NA, nrow = nrow(gbs_CPM), ncol = ncol(gbs_CPM))
+colnames(zscore_CPM) <- colnames(gbs_CPM)
+rownames(zscore_CPM) <- rownames(gbs_CPM)
+
+zscore_CPM <- as.data.frame(zscore_CPM)
+
+#populating the dataframe with zscore values
+for (i in 1:nrow(gbs_CPM)){
+  zscore_CPM[i,] = as.vector((gbs_CPM[i,]-sum_CPM[i])/sd_CPM[i])
+  #print((gbs_CPM[i,]-sum_CPM[i])/sd_CPM[i])
+}
+
+##########################
+### plotando o heatmap ###
+##########################
+
+mat_col = data.frame(Condition=factor(c(rep("GBS",6), #01,02,13,25,26,04
+                                        rep("REC",10), #09.07,16,30,29,27,28,08,38,39
+                                        rep("CTL",6) #10,11,19,20,33,34
+                                        )
+                                      )
+                     )
+
+row.names(mat_col) = colnames(zscore_CPM)
+
+mat_row <- Modules_genes
+row.names(mat_row) <- mat_row$genes
+mat_row <- as.matrix(mat_row)
+mat_row <- as.data.frame(mat_row[,2])
+colnames(mat_row) <- "Modules"
+mat_row$Modules <- as.factor(mat_row$Modules)
+
+
+mat_colors <- list(Condition = c('GBS' = "#C35B52",
+                                 'REC' = "#69B1B7",
+                                 'CTL' = "#303030"),
+                   Modules = c('M1'= "#b40000ff",'M2'= "#b34200ff",'M3'= "#b28400ff",
+                               'M4'= "#9bb200ff",'M5'= "#57b300ff",'M6'= "#14b400ff",
+                               'M7'= "#00b42bff",'M8'= "#00b46fff",'M9'= "#00b4b4ff",
+                               'M10'= "#006fb4ff",'M11'= "#002bb3ff",'M12'= "#1400b4ff")
+)
+
+
+pheatmap(t(subset(zscore_CPM, rownames(zscore_CPM) %in% Modules_genes$genes)),
+         color = colorRampPalette(c("blue","gray20","red"))(n = 500),   #colors from RColorBrewer,
+         breaks =  c(seq(-3.8,-0.97,length=166),                            # for blue
+                     seq(-0.971,0.99,length=166),                         # for black
+                     seq(0.991,4.4,length=166)
+         ),
+         show_rownames = T,
+         show_colnames = F,
+         treeheight_col = 0,
+         annotation_col = mat_row,
+         annotation_row = mat_col,
+         annotation_colors = mat_colors,
+         border_color = NA,
+         #clustering_method = "ward.D2",
+         legend = T,
+         fontsize_col = 10)
+
+
+```
+
+
+
+### 3 - Enriquecimento com termos de GO
+
+Agora que eu tenho os módulos de genes co-expressos, eu vou realizar uma análise de enriquecimento com termos de GO utilizando o pacote [enrichR](https://cran.r-project.org/package=enrichR)
+
+```R
+library(enrichR)
+
+#enriquecimento com termos de GO para processos biologicos
+enrichr_M1 <- enrichr(Modules_genes[Modules_genes$modules %in% "M1",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+#selecionando termos com pvalor ajustado unferior a 0.05
+enrichr_M1 <- subset(enrichr_M1, enrichr_M1$Adjusted.P.value < 0.05)
+#adicionando uma coluna identificando o m?dulo
+enrichr_M1$Module <- rep("M1", nrow(enrichr_M1))
+
+enrichr_M2 <- enrichr(Modules_genes[Modules_genes$modules %in% "M2",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M2$Module <- rep("M2", nrow(enrichr_M2))
+
+enrichr_M3 <- enrichr(Modules_genes[Modules_genes$modules %in% "M3",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M3$Module <- rep("M3", nrow(enrichr_M3))
+
+enrichr_M4 <- enrichr(Modules_genes[Modules_genes$modules %in% "M4",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M4$Module <- rep("M4", nrow(enrichr_M4))
+
+enrichr_M5 <- enrichr(Modules_genes[Modules_genes$modules %in% "M5",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M5$Module <- rep("M5", nrow(enrichr_M5))
+
+enrichr_M6 <- enrichr(Modules_genes[Modules_genes$modules %in% "M6",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M6$Module <- rep("M6", nrow(enrichr_M6))
+
+enrichr_M7 <- enrichr(Modules_genes[Modules_genes$modules %in% "M7",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M7 <- subset(enrichr_M7, enrichr_M7$Adjusted.P.value < 0.05)
+enrichr_M7$Module <- rep("M7", nrow(enrichr_M7))
+
+enrichr_M8 <- enrichr(Modules_genes[Modules_genes$modules %in% "M8",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M8$Module <- rep("M8", nrow(enrichr_M8))
+
+enrichr_M9 <- enrichr(Modules_genes[Modules_genes$modules %in% "M9",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M9 <- subset(enrichr_M9, enrichr_M9$Adjusted.P.value < 0.05)
+enrichr_M9$Module <- rep("M9", nrow(enrichr_M9))
+
+enrichr_M10 <- enrichr(Modules_genes[Modules_genes$modules %in% "M10",]$genes,
+                      "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M10$Module <- rep("M10", nrow(enrichr_M10))
+
+enrichr_M11 <- enrichr(Modules_genes[Modules_genes$modules %in% "M11",]$genes,
+                       "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M11$Module <- rep("M11", nrow(enrichr_M11))
+
+enrichr_M12 <- enrichr(Modules_genes[Modules_genes$modules %in% "M12",]$genes,
+                       "GO_Biological_Process_2018")$GO_Biological_Process_2018
+enrichr_M12$Module <- rep("M12", nrow(enrichr_M12))
+
+#juntando todas as tabelas com os termos de GO dos m?dulos
+GO_enrichment <- rbind(enrichr_M1, enrichr_M2, enrichr_M3, enrichr_M4, enrichr_M5, enrichr_M6,
+                       enrichr_M7, enrichr_M8, enrichr_M9, enrichr_M10, enrichr_M11, enrichr_M12)
+
+#removendo colunas in?teis
+GO_enrichment <- GO_enrichment[,-c(5,6)]
+
+#selecionando termos com pvalor ajustado inferior a 0.05
+GO_enrichment_Pv <- subset(GO_enrichment, GO_enrichment$Adjusted.P.value < 0.05)
+```
+
+Dentro da tabela, só foram identificados termos significantemente enriquecidos para os módulos M1, M7 e M9. Os genes do módulo M9 relacionam-se com os termos _peptidyl-tyrosine modification (GO:0018212)_ e _embryonic digestive tract development (GO:0048566)_ já os módulos M1 e M7 apresentam termos que parecem relevantes para as análises de GBS. No entando, o M1 tem 91 termos e para reduzir eu vou utilizar novamente o REVIGO e uma função que eu mesmo criei, chamada de [**cool_table**](https://github.com/diegogotex/Rcodes). Essa função serve para tornar a tabela do enrichR com uma visualização melhor.
+
+Não achei necessário reduzir o número de termos para o módulo M7 já que ele tem somente 10 termos.
+
+```R
+source("https://github.com/diegogotex/Rcodes/blob/master/cooltable.R")
+library(ggplot2)
+library(tidyr)
+
+
+#preparando uma tabela com termos de GO para o M1
+#a funcaoo cool_table tem que ser carregada
+enrichr_M1 <- cool_table(enrichment.obj = enrichr_M1, enrich.type = 2, up = Modules_genes$genes, down = NA)
+#pegando os IDs dos termos de GO
+enrichr_M1$GO_id <- separate(data = enrichr_M1, col = Term, into = c("left", "right"), sep = "\\(")$right
+enrichr_M1$GO_id <- gsub(")", "", enrichr_M1$GO_id)
+
+#selecionando os termos de GO com menos redundancia
+enrichr_M1_REVIGO <- read.csv("enrich_M1_REVIGO.csv", stringsAsFactors = F)
+
+enrich_M1_kept <- subset(enrichr_M1, enrichr_M1$GO_id %in% enrichr_M1_REVIGO[enrichr_M1_REVIGO$eliminated == 0,]$term_ID)
+
+ggplot(data = enrich_M1_kept, aes(x=reorder(Term,-Adjusted.P.value,), y = -log10(Adjusted.P.value)))+
+  geom_col(aes(fill = -log10(Adjusted.P.value))) +
+  scale_fill_gradient2(low = "white",
+                       high = "#b40000ff")+
+  coord_flip() +
+  labs(x = "",
+       y = "",
+       title = "GO (BP) Terms for M1")+
+  theme_bw()
+
+ggplot(data = enrichr_M7, aes(x=reorder(Term,-Adjusted.P.value,), y = -log10(Adjusted.P.value)))+
+  geom_col(aes(fill = -log10(Adjusted.P.value))) +
+  scale_fill_gradient2(low = "white",
+                       high = "#00b42bff")+
+  coord_flip() +
+  labs(x = "",
+       y = "",
+       title = "GO (BP) Terms for M7")+
+  theme_bw()
+
+```
+
+### Rede PPI com dados de Co-expressão
+
+Essa etapa é a mais demorada pois depende do download de alguns dados do ENSEMBL e do STRING.
+
+**1.** Na primeira parte eu vou importar um dataframe que tem a associação entre o gene_id e o SYMBOL, eu gerei isso a partir do arquivo .GFF.
+```R
+ref <- read.table("/Users/diego/Dropbox/DualSeq_IMT/GBS_NEW/ref/geneID_symbol_dict.txt",
+                  stringsAsFactors = F,
+                  header = F)
+colnames(ref) <- c("gene_id","SYMBOL")
+
+```
+
+**2.** Em seguida eu vou puxar as informações do ensembl
+
+```R
+# Conectar a um database
+ensembl <- useMart("ensembl")
+
+# selecionando o dataset
+ensembl <- useDataset("hsapiens_gene_ensembl", ensembl)
+
+
+# retirar outras informacoes sobre nossa lista de proteinas. Rode o comando abaixo:
+query <- getBM(attributes=c("ensembl_gene_id","ensembl_peptide_id","entrezgene_id","hgnc_symbol"),
+               mart=ensembl, filters="ensembl_gene_id", values=ref$gene_id)
+
+```
+
+**3.** Pegando as informações de interação PPI no STRING
