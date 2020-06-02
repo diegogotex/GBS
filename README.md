@@ -639,7 +639,26 @@ cem <- cemitool(expr= gbs_CPM_dis,
 
 #gerando uma tabela mostrando os genes coexpressos e o respectivo modulo
 Modules_genes <- module_genes(cem)
+
+
+#as cores eu pego depois que gero as figuras de PPI
+xx <- barplot(sort(table(Modules_genes_rec$modules), decreasing = T),
+              xlab = "Modules",
+              ylab = "# co-expressed genes",
+              col = mod_col2,
+              border = F)
+
+text(x = xx,
+     y = sort(table(Modules_genes_rec$modules), decreasing = T)-c(100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+     label = sort(table(Modules_genes_rec$modules), decreasing = T),
+     pos = 3, cex = 0.8, col = "black", font = 2)
+
+
+
+
 ```
+
+
 
 Vamos calcular o Z-value e plotar o heatmap mostrando o genes nos módulos.
 
@@ -1114,16 +1133,9 @@ ggarrange(plots$M13, pM13_rec, nrow = 1, ncol = 2)
 ```
 
 
-
-
-
-
-
-
-
 ### 5 - Identificando os tipos celulares
 
-Para essa etapa das análises, irei utilizar o (CTen)[http://www.influenza-x.org/~jshoemaker/cten/upload.php]
+Para essa etapa das análises, irei utilizar o [CTen](http://www.influenza-x.org/~jshoemaker/cten/upload.php)
 
 O dado de entrada é a tabela de Gene e o respectivo módulo.
 
@@ -1167,3 +1179,4 @@ pheatmap(mat = CTen.REC[!rowSums(CTen.REC) <  1.5,],
 
 ![](https://github.com/diegogotex/GBS/blob/master/Figs/CTen_GBS.png)
 ![](https://github.com/diegogotex/GBS/blob/master/Figs/CTen_REC.png)
+
