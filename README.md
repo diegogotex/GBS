@@ -18,21 +18,21 @@ Ao todo, são 20 amostras: 5 GBS; 9 GBS Recuperado (GBS_rec); 6 Controle (CTL).
 
 | Amostra | Diag. Eletroneuro | Status |coleta | Sexo | Idade |Cod. interno|
 | :------: | :-----: |  :-----: | :--------: | :-------: |:-------: |:-------: |
-|1  | DESMIELINIZANTE  | GBS | 15/4/2015 |  M | 39  |
-|2  | DESMIELINIZANTE  | GBS | 18/5/2015 |  M | 57  |
-|13 | DESMIELINIZANTE  | GBS | 23/5/2015 |  H | 46  |
- |25 | INCONCLUSIVO  | GBS | 23/5/2015 |  M | 53  |
-|26 | INCONCLUSIVO  | GBS | 12/2/2016 |  H |  81  |
-|4  | DESMIELINIZANTE  | GBS | 24/2/2016 |  M | 45  |
-|27 | DESMIELINIZANTE  | REC | 7/3/2016 |  M |  31  |
-|28 | DESMIELINIZANTE  | REC | 7/3/2016 |  H |  31  |
-|7  | DESMIELINIZANTE  | REC | 10/3/2016 |  M | 57  |
-|16 | DESMIELINIZANTE  | REC | 11/3/2017 |  H | 47  |
-|8  | DESMIELINIZANTE  | REC | 18/3/2016 |  H | 41  |
-|30 |INCONCLUSIVO  | REC | 15/3/2016 |  M | 53  |
-|9  | DESMIELINIZANTE  | REC | 16/3/2016 |  M | 39  |
-|38 | DESMIELINIZANTE  | REC | 19/8/2016 |  H | 15  |
-|39 | AXONAL  | REC | 19/8/2016 |  M |  42  |
+|1  | DESMIELINIZANTE  | GBS | 15/4/2015 |  M | 39  |GBS 408|
+|2  | DESMIELINIZANTE  | GBS | 18/5/2015 |  M | 57  |GBS 414|
+|13 | DESMIELINIZANTE  | GBS | 23/5/2015 |  H | 46  |GBS 417|
+|25 | INCONCLUSIVO  | GBS | 23/5/2015 |  M | 53  |GBS 418|
+|26 | INCONCLUSIVO  | GBS | 12/2/2016 |  H |  81  |GBS 438|
+|4  | DESMIELINIZANTE  | GBS | 24/2/2016 |  M | 45  |GBS 443|
+|27 | DESMIELINIZANTE  | REC | 7/3/2016 |  M |  31  |GBS 452|
+|28 | DESMIELINIZANTE  | REC | 7/3/2016 |  H |  31  |GBS 453|
+|7  | DESMIELINIZANTE  | REC | 10/3/2016 |  M | 57  |GBS 455|
+|16 | DESMIELINIZANTE  | REC | 11/3/2017 |  H | 47  |GBS 457|
+|8  | DESMIELINIZANTE  | REC | 18/3/2016 |  H | 41  |GBS 464|
+|30 |INCONCLUSIVO  | REC | 15/3/2016 |  M | 53  |GBS 465|
+|9  | DESMIELINIZANTE  | REC | 16/3/2016 |  M | 39  |GBS 466|
+|38 | DESMIELINIZANTE  | REC | 19/8/2016 |  H | 15  | GBS 518|
+|39 | AXONAL  | REC | 19/8/2016 |  M |  42  |GBS 519|
 
 
 <center>
