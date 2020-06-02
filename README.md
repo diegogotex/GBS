@@ -640,6 +640,9 @@ cem <- cemitool(expr= gbs_CPM_dis,
 #gerando uma tabela mostrando os genes coexpressos e o respectivo modulo
 Modules_genes <- module_genes(cem)
 
+mod_col <- c("#b40000ff","#b34200ff","#b28400ff", "#9bb200ff","#57b300ff","#14b400ff", "#00b42bff","#00b46fff","#00b4b4ff",
+ "#006fb4ff","#002bb3ff","#1400b4ff")
+
 #plotando a quantidade de genes por módulo.
 #as cores eu pego depois que gero as figuras de PPI
 xx <- barplot(sort(table(Modules_genes$modules), decreasing = T),
@@ -649,7 +652,7 @@ xx <- barplot(sort(table(Modules_genes$modules), decreasing = T),
               border = F)
 
 text(x = xx,
-     y = sort(table(Modules_genes$modules), decreasing = T)-c(100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+     y = sort(table(Modules_genes$modules), decreasing = T)-c(100,0,0,0,0,0,0,0,0,0,0,0),
      label = sort(table(Modules_genes_rec$modules), decreasing = T),
      pos = 3, cex = 0.8, col = "black", font = 2)
 
