@@ -640,16 +640,16 @@ cem <- cemitool(expr= gbs_CPM_dis,
 #gerando uma tabela mostrando os genes coexpressos e o respectivo modulo
 Modules_genes <- module_genes(cem)
 
-
+#plotando a quantidade de genes por módulo.
 #as cores eu pego depois que gero as figuras de PPI
-xx <- barplot(sort(table(Modules_genes_rec$modules), decreasing = T),
+xx <- barplot(sort(table(Modules_genes$modules), decreasing = T),
               xlab = "Modules",
               ylab = "# co-expressed genes",
-              col = mod_col2,
+              col = mod_col,
               border = F)
 
 text(x = xx,
-     y = sort(table(Modules_genes_rec$modules), decreasing = T)-c(100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+     y = sort(table(Modules_genes$modules), decreasing = T)-c(100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
      label = sort(table(Modules_genes_rec$modules), decreasing = T),
      pos = 3, cex = 0.8, col = "black", font = 2)
 
@@ -657,8 +657,8 @@ text(x = xx,
 
 
 ```
-
-
+![](https://github.com/diegogotex/GBS/blob/master/Figs/Mod_quantidade_GBS.png)
+<br/>
 
 Vamos calcular o Z-value e plotar o heatmap mostrando o genes nos módulos.
 
@@ -1132,7 +1132,15 @@ ggarrange(plots$M13, pM13_rec, nrow = 1, ncol = 2)
 
 ```
 
+![](https://github.com/diegogotex/GBS/blob/master/Figs/Mod_quantidade_REC.png)
+<br/>
+![](https://github.com/diegogotex/GBS/blob/master/Figs/M3_and_GO.png)
+<br/>
+![](https://github.com/diegogotex/GBS/blob/master/Figs/M13_and_GO.png)
+<br/>
+![](https://github.com/diegogotex/GBS/blob/master/Figs/Rede_ALL.png)
 
+<br/>
 ### 5 - Identificando os tipos celulares
 
 Para essa etapa das análises, irei utilizar o [CTen](http://www.influenza-x.org/~jshoemaker/cten/upload.php)
