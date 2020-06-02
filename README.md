@@ -1141,6 +1141,7 @@ ggarrange(plots$M13, pM13_rec, nrow = 1, ncol = 2)
 ![](https://github.com/diegogotex/GBS/blob/master/Figs/Rede_ALL.png)
 
 <br/>
+
 ### 5 - Identificando os tipos celulares
 
 Para essa etapa das análises, irei utilizar o [CTen](http://www.influenza-x.org/~jshoemaker/cten/upload.php)
